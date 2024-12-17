@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import Note from "./Note";
 export default function App() {
-  const [note, setNote] = useState({});
   const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
-  const [isDeleted, setIsDeleted] = useState();
-  const handleDelete = (data) => {
-    setIsDeleted(data);
-    console.log(isDeleted);
-  };
+
+  function sendDeleteID(id) {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  }
+  function sendEditID(id) {
+    todos.map((todo,index)=>{
+      if(todo.id==id){
+        document.querySelector("input").value = todo.text;
+        document.querySelector("#button").innerHTML = "Update";
+      }
+    })
+  }
   const createNote = (e) => {
     e.preventDefault();
     setTodos([
@@ -32,13 +38,16 @@ export default function App() {
           <input
             className="rounded mt-5 px-2 py-1 text-gray-800"
             type="text"
+            id="inputID"
             onChange={(e) => {
               setText(e.target.value);
             }}
           />
           <button
             className="text-2xl px-2 py-1 mx-5 bg-blue-500 text-white rounded-lg"
-            onClick={(e) => createNote(e)}>
+            onClick={(e) => createNote(e)}
+            id="button"
+          >
             ADD NOTE
           </button>
         </div>
@@ -47,7 +56,13 @@ export default function App() {
         {todos.map((todo, index) => {
           return (
             <>
-              <Note note={todo} key={index} itemDeleted={handleDelete} />;
+              <Note
+                note={todo}
+                key={index}
+                sendDeleteID={sendDeleteID}
+                sendEditID={sendEditID}
+              />
+              ;
             </>
           );
         })}
